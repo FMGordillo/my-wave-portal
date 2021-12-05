@@ -5,8 +5,14 @@ import { Title } from "./styles";
 
 const IndexContainer: FunctionComponent = () => (
   <Layout title="Home">
-    <Title>Hello</Title>
-    <Input />
+    <section>
+      <Title>Hello</Title>
+      <Input placeholder="Type your message" />
+    </section>
+    <section>
+      <Title>Messages</Title>
+      <p>TODO: messages goes here</p>
+    </section>
   </Layout>
 )
 

@@ -1,9 +1,13 @@
 import type { FunctionComponent } from 'react'
-import styled from 'styled-components'
+import { Input as InputComponent } from './styles'
 
-const Input: FunctionComponent = () => {
+type InputProps = {
+  placeholder?: string
+}
+
+const Input: FunctionComponent<InputProps> = ({ placeholder }) => {
   return (
-      <input />
+    <InputComponent placeholder={placeholder} />
   )
 }
 
