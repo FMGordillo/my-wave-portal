@@ -1,13 +1,16 @@
-import type { FunctionComponent } from 'react'
+import type { ChangeEventHandler, FunctionComponent } from 'react'
 import { Input as InputComponent } from './styles'
 
 type InputProps = {
+  name?: string
+  value?: string
+  onChange?: ChangeEventHandler<HTMLInputElement>
   placeholder?: string
 }
 
-const Input: FunctionComponent<InputProps> = ({ placeholder }) => {
+const Input: FunctionComponent<InputProps> = ({ name, value, placeholder, onChange }) => {
   return (
-    <InputComponent placeholder={placeholder} />
+    <InputComponent name={name} onChange={onChange} value={value} placeholder={placeholder} />
   )
 }
 
