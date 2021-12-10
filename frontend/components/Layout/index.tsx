@@ -1,24 +1,26 @@
-import Head from 'next/head'
-import { InferProps, string } from 'prop-types'
-import type { FunctionComponent } from 'react'
+import Head from "next/head";
+import { InferProps, string } from "prop-types";
+import type { FunctionComponent } from "react";
+import { Main } from "./style";
 
 const LayoutPropTypes = {
   title: string.isRequired,
-}
+};
 
-const Layout: FunctionComponent<InferProps<typeof LayoutPropTypes>> = ({ children, title, }) => {
-  const metaTitle = title ? `${title} | MessageApp` : 'MessageApp'
+const Layout: FunctionComponent<InferProps<typeof LayoutPropTypes>> = ({
+  children,
+  title,
+}) => {
+  const metaTitle = title ? `${title} | MessageApp` : "MessageApp";
 
   return (
     <>
       <Head>
         <title>{metaTitle}</title>
       </Head>
-      <main>
-        {children}
-      </main>
+      <Main>{children}</Main>
     </>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

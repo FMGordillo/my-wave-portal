@@ -1,23 +1,40 @@
-import { FormEvent, FormEventHandler, FunctionComponent, useState } from "react";
+import { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Input from "../../components/Input";
-import { Title } from "./styles";
+import { Button, HelloSection, Title } from "./styles";
+import { checkWalletConnection, connectWallet } from "../../lib/wallet";
 
 const IndexContainer: FunctionComponent = () => {
-  const [messageInput, setMessageInput] = useState("")
-  const [messages, setMessages] = useState<string[]>([])
+  const [loading, setLoading] = useState(false);
+  const [walletAddress, setWalletAddress] = useState("");
+  const [messageInput, setMessageInput] = useState("");
+  const [messages, setMessages] = useState<string[]>([]);
+
+  useEffect(() => {
+    checkWalletConnection();
+  }, []);
+
+  const handleConnectWallet = async () => {
+    setLoading(true);
+    const wallet = await connectWallet();
+    if (wallet) setWalletAddress(wallet);
+    setLoading(false);
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     // @ts-ignore
-    setMessages([...messages, e.target?.message?.value])
-    setMessageInput("")
-  }
+    setMessages([...messages, e.target?.message?.value]);
+    setMessageInput("");
+  };
 
   return (
     <Layout title="Home">
-      <section>
+      <HelloSection>
         <Title>Hello</Title>
+        <Button disabled={loading} onClick={() => handleConnectWallet()}>
+          {walletAddress === "" ? "Connect Metamask Account" : "Disonnect?"}
+        </Button>
         <form onSubmit={handleSubmit}>
           <Input
             name="message"
@@ -26,13 +43,15 @@ const IndexContainer: FunctionComponent = () => {
             onChange={(e) => setMessageInput(e.target.value)}
           />
         </form>
-      </section>
+      </HelloSection>
       <section>
         <Title>Messages</Title>
-        {messages.map((message, i) => (<p key={i}>{message}</p>))}
+        {messages.map((message, i) => (
+          <p key={i}>{message}</p>
+        ))}
       </section>
     </Layout>
-  )
-}
+  );
+};
 
-export default IndexContainer
+export default IndexContainer;
