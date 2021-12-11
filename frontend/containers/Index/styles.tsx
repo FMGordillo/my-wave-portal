@@ -1,4 +1,16 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const backgroundAnimation = keyframes`
+  from {
+    background-position: 25%;
+  }
+  50% {
+    background-position: 50%;
+  }
+  to {
+    background-position: 70%;
+  }
+`;
 
 export const Title = styled.h1`
   font-weight: 700;
@@ -16,7 +28,12 @@ export const Button = styled.button`
   &:hover {
     color: white;
     cursor: pointer;
-    background: hsl(233deg, 50%, 50%);
+    background: linear-gradient(
+      to right,
+      hsl(233deg, 50%, 50%),
+      hsl(270deg, 50%, 50%)
+    );
+    animation: 4s ease 0s infinite normal none running ${backgroundAnimation};
   }
   &:active {
     color: black;

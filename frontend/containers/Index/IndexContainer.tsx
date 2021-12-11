@@ -2,17 +2,18 @@ import { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Input from "../../components/Input";
 import { Button, HelloSection, Title } from "./styles";
-import { checkWalletConnection, connectWallet } from "../../lib/wallet";
+import {
+  checkWalletConnection,
+  connectWallet,
+  getWaves,
+} from "../../lib/wallet";
 
 const IndexContainer: FunctionComponent = () => {
   const [loading, setLoading] = useState(false);
+  const [waves, setWaves] = useState(0);
   const [walletAddress, setWalletAddress] = useState("");
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
-
-  useEffect(() => {
-    checkWalletConnection();
-  }, []);
 
   const handleConnectWallet = async () => {
     setLoading(true);
@@ -28,13 +29,23 @@ const IndexContainer: FunctionComponent = () => {
     setMessageInput("");
   };
 
+  const applyWaves = async () => {
+    const waves = await getWaves();
+    if (waves) setWaves(waves);
+  };
+
+  useEffect(() => {
+    applyWaves();
+  }, []);
+
   return (
     <Layout title="Home">
       <HelloSection>
         <Title>Hello</Title>
         <Button disabled={loading} onClick={() => handleConnectWallet()}>
-          {walletAddress === "" ? "Connect Metamask Account" : "Disonnect?"}
+          {walletAddress === "" ? "Connect Metamask Account" : "Disconnect?"}
         </Button>
+        <p>Total waves: {waves}</p>
         <form onSubmit={handleSubmit}>
           <Input
             name="message"

@@ -1,4 +1,7 @@
 import { AssertionError } from "assert";
+import { ethers } from "ethers";
+import WaveContract from "./WavePortal.json";
+
 declare global {
   interface Window {
     ethereum: any | undefined;
@@ -11,10 +14,15 @@ function assert(condition: any, msg?: string): asserts condition {
   }
 }
 
+function isEthereumAvailable() {
+  assert(window !== undefined, "window key is no available");
+  assert(window.ethereum !== undefined, "ethereum key is not available");
+  return true;
+}
+
 export function checkWalletConnection() {
   try {
-    assert(window !== undefined, "window key is no available");
-    assert(window.ethereum !== undefined, "ethereum key is not available");
+    assert(isEthereumAvailable());
     console.log("We have the ethereum object", window.ethereum);
     return true;
   } catch (error) {
@@ -25,7 +33,7 @@ export function checkWalletConnection() {
 
 export async function requestWalletAccess() {
   try {
-    if (!checkWalletConnection()) return;
+    isEthereumAvailable();
     const accounts = await window.ethereum.request({ method: "eth_accounts" });
     assert(accounts.length === 0, "No authorized account");
     const account = accounts[0];
@@ -39,8 +47,7 @@ export async function requestWalletAccess() {
 
 export async function connectWallet(): Promise<string | null> {
   try {
-    assert(checkWalletConnection(), "No wallet connect");
-    assert(await requestWalletAccess(), "No wallet available");
+    isEthereumAvailable();
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
@@ -48,6 +55,24 @@ export async function connectWallet(): Promise<string | null> {
     return accounts[0] as string;
   } catch (error) {
     console.error("Error while connecting to wallet", error);
+    return null;
+  }
+}
+
+export async function getWaves(): Promise<number | null> {
+  try {
+    isEthereumAvailable();
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = provider.getSigner();
+    const wavePortalContract = new ethers.Contract(
+      "0x4eC213e90041Fe5d78c783924094C1f3d2D6FEb1",
+      WaveContract.abi,
+      signer
+    );
+    const count = await wavePortalContract.getTotalWaves();
+    return count.toNumber();
+  } catch (error) {
+    console.log("Error while sending wave", error);
     return null;
   }
 }
